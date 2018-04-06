@@ -1,0 +1,136 @@
+<main>
+    <div class="page-content">
+          <input style="width: 330px;"
+                 type="text"
+                 placeholder="Set URL of the PDF file"
+                 [(ngModel)]="pdfSrc"
+          >
+
+
+      <div class="select-file__container">
+          <input (change)="onFileSelected()" type="file" id="file">
+      </div>
+
+      <div *ngIf="error" class="error">
+          {{ error.message | json }}
+      </div>
+
+      <div >
+          <!--<mat-slide-toggle [(ngModel)]="showAll">-->
+              <!--Show all pages-->
+          <!--</mat-slide-toggle>-->
+      </div>
+
+      <div class="mb">
+          <button (click)="incrementZoom(-0.1)" mat-button type="button">
+              -
+          </button>
+
+
+              <input style="width: 70px"
+                     disabled
+                     type="number"
+                     placeholder="Zoom"
+                     [(ngModel)]="zoom"
+                     pattern="-?[0-9]*(\.[0-9]+)?"
+              >
+
+
+
+          <button (click)="incrementZoom(0.1)" mat-button type="button">
+              +
+          </button>
+      </div>
+
+
+      <div *ngIf="showAll">
+          <mat-slide-toggle [(ngModel)]="stickToPage">
+              Stick to page
+          </mat-slide-toggle>
+      </div>
+
+      <div *ngIf="stickToPage && showAll || !showAll" class="mb">
+          <button (click)="incrementPage(-1)" mat-button type="button">
+              Previous
+          </button>
+
+
+              <input style="width: 50px"
+                     type="number"
+                     placeholder="Page"
+                     [(ngModel)]="page"
+                     pattern="-?[0-9]*(\.[0-9]+)?"
+              >
+
+
+          <span *ngIf="pdf">of {{ pdf.numPages }}</span>
+          <button (click)="incrementPage(1)"  mat-button type="button">
+              Next
+          </button>
+      </div>
+
+
+          <button (click)="rotate(-90)" mat-button type="button">Rotate left</button>
+
+
+              <input style="width: 50px;"
+                     type="number"
+                     placeholder="Angle"
+                     [ngModel]="rotation"
+                     disabled
+              >
+
+
+          <button (click)="rotate(90)" mat-button type="button">Rotate right</button>
+
+      <div *ngIf="showAll" class="mb">
+          <mat-slide-toggle [(ngModel)]="isOutlineShown">
+              Show outline
+          </mat-slide-toggle>
+      </div>
+
+      <div *ngIf="showAll && isOutlineShown">
+          <ul *ngFor="let item of outline" class="outline-list">
+              <li>
+                  <a (click)="navigateTo(item.dest)">
+                      {{ item.title }}
+                  </a>
+
+                  <ul *ngFor="let child of item.items">
+                      <li>
+                          <a (click)="navigateTo(child.dest)">
+                              {{ child.title }}
+                          </a>
+                      </li>
+                  </ul>
+              </li>
+          </ul>
+      </div>
+
+      <!--<div *ngIf="!isLoaded && !error && progressData" id="progress">-->
+          <!--<div class="bg">-->
+              <!--<div class="bar" [style.width]="progressData.loaded / progressData.total * 100 + '%'"></div>-->
+          <!--</div>-->
+          <!--<span>{{ getInt(progressData.loaded / progressData.total * 100) }}%</span>-->
+      <!--</div>-->
+
+
+      <pdf-viewer [src]="pdfSrc"
+                  [(page)]="page"
+                  [rotation]="rotation"
+                  [original-size]="originalSize"
+                  [fit-to-page]="fitToPage"
+                  (after-load-complete)="afterLoadComplete($event)"
+                  [zoom]="zoom"
+                  [show-all]="showAll"
+                  [stick-to-page]="stickToPage"
+                  [render-text]="renderText"
+                  [external-link-target]="'blank'"
+                  [autoresize]="autoresize"
+                  (error)="onError($event)"
+                  (on-progress)="onProgress($event)"
+                  (page-rendered)="pageRendered($event)"
+      ></pdf-viewer>
+
+  </div>
+</main>
